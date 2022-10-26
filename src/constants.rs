@@ -121,3 +121,5 @@ pub const RIGHT_ARROW_EMOJI: Emoji<'_, '_> = Emoji("➡️ ", "");
 pub const MONEY_BAG_EMOJI: Emoji<'_, '_> = Emoji("💰 ", "");
 
 pub const MAX_FREEZE_DAYS: u8 = 31;
+
+pub const CANDY_MACHINE_PROGRAM_ID: &str = "5aWe1ucZ7gvYVrJ3MwtUEK85YF4smCCNDNmxKaicspWg";

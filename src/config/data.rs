@@ -80,6 +80,10 @@ pub struct ConfigData {
     pub shdw_storage_account: Option<String>,
 
     pub pinata_config: Option<PinataConfig>,
+
+    pub base_uri: String,
+
+    pub name: String,
 }
 
 pub fn to_string<T, S>(value: &T, serializer: S) -> Result<S::Ok, S::Error>

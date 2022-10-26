@@ -241,6 +241,8 @@ fn create_candy_machine_data(
         hidden_settings,
         items_available: config.number,
         gatekeeper,
+        base_uri: config.base_uri.clone(),
+        name: config.name.clone(),
     };
     Ok(data)
 }

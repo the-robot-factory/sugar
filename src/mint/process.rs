@@ -413,6 +413,9 @@ pub async fn mint(
     let (candy_machine_creator_pda, creator_bump) =
         find_candy_machine_creator_pda(&candy_machine_id);
 
+    let revenue_recipient =
+        Pubkey::from_str("3iYf9hHQPciwgJ1TCjpRUp1A3QW4AfaK7J6vCmETRMuu").unwrap();
+
     let mut mint_ix = program
         .request()
         .accounts(nft_accounts::MintNFT {
@@ -432,6 +435,7 @@ pub async fn mint(
             clock: sysvar::clock::ID,
             recent_blockhashes: sysvar::recent_blockhashes::ID,
             instruction_sysvar_account: sysvar::instructions::ID,
+            revenue_recipient: revenue_recipient,
         })
         .args(nft_instruction::MintNft { creator_bump });
 
