@@ -92,77 +92,77 @@ pub fn process_verify(args: VerifyArgs) -> Result<()> {
         // with hidden settings
         println!("\nHidden settings enabled. No config items to verify.");
     } else if let Some(config_line_settings) = &candy_machine.data.config_line_settings {
-        let num_items = candy_machine.data.items_available;
-        let cache_items = &mut cache.items;
-        let mut errors = Vec::new();
+        // let num_items = candy_machine.data.items_available;
+        // let cache_items = &mut cache.items;
+        // let mut errors = Vec::new();
 
-        println!("Verifying {} config line(s): (Ctrl+C to abort)", num_items);
-        let pb = progress_bar_with_style(num_items as u64);
-        // sleeps for a about 1 second
-        let step: u64 = if num_items > 0 {
-            1_000_000 / num_items as u64
-        } else {
-            0
-        };
+        // println!("Verifying {} config line(s): (Ctrl+C to abort)", num_items);
+        // let pb = progress_bar_with_style(num_items as u64);
+        // // sleeps for a about 1 second
+        // let step: u64 = if num_items > 0 {
+        //     1_000_000 / num_items as u64
+        // } else {
+        //     0
+        // };
 
-        let line_size = candy_machine.data.get_config_line_size();
-        let name_length = config_line_settings.name_length as usize;
-        let uri_length = config_line_settings.uri_length as usize;
+        // let line_size = candy_machine.data.get_config_line_size();
+        // let name_length = config_line_settings.name_length as usize;
+        // let uri_length = config_line_settings.uri_length as usize;
 
-        for i in 0..num_items {
-            let name_start = HIDDEN_SECTION + STRING_LEN_SIZE + line_size * (i as usize);
-            let name_end = name_start + name_length;
+        // for i in 0..num_items {
+        //     let name_start = HIDDEN_SECTION + STRING_LEN_SIZE + line_size * (i as usize);
+        //     let name_end = name_start + name_length;
 
-            let uri_start = name_end;
-            let uri_end = uri_start + uri_length;
+        //     let uri_start = name_end;
+        //     let uri_end = uri_start + uri_length;
 
-            let name_error = format!("Failed to decode name for item {}", i);
-            let name = String::from_utf8(data[name_start..name_end].to_vec())
-                .expect(&name_error)
-                .trim_matches(char::from(0))
-                .to_string();
+        //     let name_error = format!("Failed to decode name for item {}", i);
+        //     let name = String::from_utf8(data[name_start..name_end].to_vec())
+        //         .expect(&name_error)
+        //         .trim_matches(char::from(0))
+        //         .to_string();
 
-            let uri_error = format!("Failed to decode uri for item {}", i);
-            let uri = String::from_utf8(data[uri_start..uri_end].to_vec())
-                .expect(&uri_error)
-                .trim_matches(char::from(0))
-                .to_string();
+        //     let uri_error = format!("Failed to decode uri for item {}", i);
+        //     let uri = String::from_utf8(data[uri_start..uri_end].to_vec())
+        //         .expect(&uri_error)
+        //         .trim_matches(char::from(0))
+        //         .to_string();
 
-            let on_chain_item = OnChainItem {
-                name: config_line_settings.prefix_name.to_string() + &name,
-                uri: config_line_settings.prefix_uri.to_string() + &uri,
-            };
-            let cache_item = cache_items
-                .get_mut(&i.to_string())
-                .expect("Failed to get item from config.");
+        //     let on_chain_item = OnChainItem {
+        //         name: config_line_settings.prefix_name.to_string() + &name,
+        //         uri: config_line_settings.prefix_uri.to_string() + &uri,
+        //     };
+        //     let cache_item = cache_items
+        //         .get_mut(&i.to_string())
+        //         .expect("Failed to get item from config.");
 
-            if let Err(err) = items_match(cache_item, &on_chain_item) {
-                cache_item.on_chain = false;
-                errors.push((i.to_string(), err.to_string()));
-            }
+        //     if let Err(err) = items_match(cache_item, &on_chain_item) {
+        //         cache_item.on_chain = false;
+        //         errors.push((i.to_string(), err.to_string()));
+        //     }
 
-            pb.inc(1);
-            thread::sleep(Duration::from_micros(step));
-        }
+        //     pb.inc(1);
+        //     thread::sleep(Duration::from_micros(step));
+        // }
 
-        if !errors.is_empty() {
-            pb.abandon_with_message(format!("{}", style("Verification failed ").red().bold()));
-            cache.sync_file()?;
+        // if !errors.is_empty() {
+        //     pb.abandon_with_message(format!("{}", style("Verification failed ").red().bold()));
+        //     cache.sync_file()?;
 
-            let total = errors.len();
-            println!("\nInvalid items found: ");
+        //     let total = errors.len();
+        //     println!("\nInvalid items found: ");
 
-            for e in errors {
-                println!("- Item {}: {}", e.0, e.1);
-            }
-            println!("\nCache updated - re-run `deploy`.");
-            return Err(anyhow!("{} invalid item(s) found.", total));
-        } else {
-            pb.finish_with_message(format!(
-                "{}",
-                style("Config line verification successful ").green().bold()
-            ));
-        }
+        //     for e in errors {
+        //         println!("- Item {}: {}", e.0, e.1);
+        //     }
+        //     println!("\nCache updated - re-run `deploy`.");
+        //     return Err(anyhow!("{} invalid item(s) found.", total));
+        // } else {
+        //     pb.finish_with_message(format!(
+        //         "{}",
+        //         style("Config line verification successful ").green().bold()
+        //     ));
+        // }
     } else {
         return Err(anyhow!(
             "Could not determine candy machine config line settings"

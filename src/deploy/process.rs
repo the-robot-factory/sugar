@@ -224,61 +224,61 @@ pub async fn process_deploy(args: DeployArgs) -> Result<()> {
     // Hidden Settings check needs to be the last action in this command, so we can
     // update the hash with the final cache state.
     if !hidden {
-        let step_num = 2 + if candy_machine_address.is_empty() {
-            collection_in_cache as u8
-        } else {
-            0
-        };
-        println!(
-            "\n{} {}Writing config lines",
-            style(format!("[{}/{}]", step_num, total_steps))
-                .bold()
-                .dim(),
-            PAPER_EMOJI
-        );
+        // let step_num = 2 + if candy_machine_address.is_empty() {
+        //     collection_in_cache as u8
+        // } else {
+        //     0
+        // };
+        // println!(
+        //     "\n{} {}Writing config lines",
+        //     style(format!("[{}/{}]", step_num, total_steps))
+        //         .bold()
+        //         .dim(),
+        //     PAPER_EMOJI
+        // );
 
-        let cndy_state = get_candy_machine_state(&sugar_config, &candy_pubkey)?;
-        let cndy_data = cndy_state.data;
+        // let cndy_state = get_candy_machine_state(&sugar_config, &candy_pubkey)?;
+        // let cndy_data = cndy_state.data;
 
-        let config_lines = generate_config_lines(num_items, &cache.items, &cndy_data)?;
+        // let config_lines = generate_config_lines(num_items, &cache.items, &cndy_data)?;
 
-        if config_lines.is_empty() {
-            println!("\nAll config lines deployed.");
-        } else {
-            // clear the interruption handler value ahead of the upload
-            args.interrupted.store(false, Ordering::SeqCst);
+        // if config_lines.is_empty() {
+        //     println!("\nAll config lines deployed.");
+        // } else {
+        //     // clear the interruption handler value ahead of the upload
+        //     args.interrupted.store(false, Ordering::SeqCst);
 
-            let errors = upload_config_lines(
-                Arc::clone(&sugar_config),
-                candy_pubkey,
-                &mut cache,
-                config_lines,
-                args.interrupted,
-            )
-            .await?;
+        //     let errors = upload_config_lines(
+        //         Arc::clone(&sugar_config),
+        //         candy_pubkey,
+        //         &mut cache,
+        //         config_lines,
+        //         args.interrupted,
+        //     )
+        //     .await?;
 
-            if !errors.is_empty() {
-                let mut message = String::new();
-                write!(
-                    message,
-                    "Failed to deploy all config lines, {0} error(s) occurred:",
-                    errors.len()
-                )?;
+        //     if !errors.is_empty() {
+        //         let mut message = String::new();
+        //         write!(
+        //             message,
+        //             "Failed to deploy all config lines, {0} error(s) occurred:",
+        //             errors.len()
+        //         )?;
 
-                let mut unique = HashSet::new();
+        //         let mut unique = HashSet::new();
 
-                for err in errors {
-                    unique.insert(err.to_string());
-                }
+        //         for err in errors {
+        //             unique.insert(err.to_string());
+        //         }
 
-                for u in unique {
-                    message.push_str(&style("\n=> ").dim().to_string());
-                    message.push_str(&u);
-                }
+        //         for u in unique {
+        //             message.push_str(&style("\n=> ").dim().to_string());
+        //             message.push_str(&u);
+        //         }
 
-                return Err(DeployError::AddConfigLineFailed(message).into());
-            }
-        }
+        //         return Err(DeployError::AddConfigLineFailed(message).into());
+        //     }
+        // }
     } else {
         // If hidden settings are enabled, update the hash value with the new cache file.
         println!("\nCandy machine with hidden settings deployed.");
